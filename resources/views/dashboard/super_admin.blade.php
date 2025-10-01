@@ -51,6 +51,8 @@
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger confirm-btn" data-action="delete" data-title="{{ $project->title }}">Delete</button>
                 </form>
+                <a href="{{ route('projects.show.public', ['user_id' => $project->user_id, 'slug' => $project->slug]) }}" target="_blank" class="btn btn-sm btn-info">View Public</a>
+
             </td>
         </tr>
         @endforeach

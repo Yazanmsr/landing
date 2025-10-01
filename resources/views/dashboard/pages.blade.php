@@ -32,8 +32,8 @@
             <td>{{ $project->slug }}</td>
             <td>{{ $project->status }}</td>
             <td>
-                <!-- Edit Button -->
-                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $project->id }}">Edit</button>
+                <!-- Edit Button: direct to edit/create page -->
+                <a href="{{ route('projects.edit', $project) }}" class="btn btn-sm btn-warning">Edit</a>
 
                 <!-- Delete Button -->
                 <form action="{{ route('pages.delete', $project) }}" method="POST" class="d-inline delete-form">
@@ -46,49 +46,8 @@
 
                 <!-- View Public -->
                 <a href="{{ route('projects.show.public', ['user_id' => $project->user_id, 'slug' => $project->slug]) }}" target="_blank" class="btn btn-sm btn-info">View Public</a>
-
-                <!-- Edit Modal -->
-                <div class="modal fade" id="editModal{{ $project->id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form action="{{ route('pages.update', $project) }}" method="POST">
-                                @csrf
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit Project</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    @method('POST')
-                                    <div class="mb-2">
-                                        <label>Type</label>
-                                        <select name="type" class="form-control" required>
-                                            <option value="landing_page" {{ $project->type=='landing_page'?'selected':'' }}>Landing Page</option>
-                                            <option value="cv" {{ $project->type=='cv'?'selected':'' }}>CV</option>
-                                            <option value="website" {{ $project->type=='website'?'selected':'' }}>Website</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label>Title</label>
-                                        <input type="text" name="title" class="form-control" value="{{ $project->title }}" required>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label>Slug</label>
-                                        <input type="text" name="slug" class="form-control" value="{{ $project->slug }}" required>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label>Content</label>
-                                        <textarea name="content" class="form-control">{{ $project->content }}</textarea>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
             </td>
+
         </tr>
         @endforeach
     </tbody>

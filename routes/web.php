@@ -152,3 +152,8 @@ use App\Http\Controllers\UserController;
 Route::middleware(['auth', 'can:is-admin'])->group(function () {
     Route::resource('users', UserController::class);
 });
+Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+
+// Route to update an existing project
+Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
