@@ -62,5 +62,11 @@ class ProjectController extends Controller
 
         return redirect()->back()->with('success', 'Project rejected!');
     }
+    public function destroy(Project $project)
+    {
+        $project->delete();
+        return redirect()->back()->with('success', 'Project deleted successfully!');
+    }
+
 
 }

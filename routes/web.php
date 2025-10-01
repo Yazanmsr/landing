@@ -3,9 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\GoogleController;
-
-// الصفحة الرئيسية
-
+    
 use Illuminate\Http\Request;
 
 Route::post('/logout', function (Request $request) {
@@ -55,10 +53,14 @@ use App\Http\Controllers\ProjectController;
 Route::post('/projects', [ProjectController::class, 'store'])
     ->middleware('auth')
     ->name('projects.store');
-Route::get('/projects/{id}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
-Route::get('/projects/{id}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
 Route::get('/user/{user}/{slug}', [ProjectController::class, 'show'])->name('projects.show');
 
+Route::middleware(['auth','can:is-admin'])->group(function () {
+    Route::post('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
+    Route::post('/projects/{project}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
+
+    Route::delete('/projects/{project}/delete', [ProjectController::class, 'destroy'])->name('projects.delete');
+});
 
 
 Route::middleware('auth')->group(function () {
@@ -133,12 +135,20 @@ Route::get('/', function () {
     $user = auth()->user();
     
 
-    if ($user->role === 'user') {
+    if ($user && $user->role === 'user') {
         $projects = Project::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
         return view('dashboard.user', compact('user'));
+    }
+    else if(!$user) {
+        return view('welcome');
     }
     $projects = Project::orderBy('created_at', 'desc')->get();
     return view('dashboard.super_admin', compact('user', 'projects'));
 });
 
 
+use App\Http\Controllers\UserController;
+
+Route::middleware(['auth', 'can:is-admin'])->group(function () {
+    Route::resource('users', UserController::class);
+});
