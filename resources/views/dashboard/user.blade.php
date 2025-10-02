@@ -10,12 +10,18 @@
 <p>Welcome, {{ $user->name }}</p>
 
 @php
-    // بيانات الحقول القديمة مع project و cvEntry
     $oldFields = old() ?: [];
     if(isset($project)) {
         $oldFields = array_merge($oldFields, $project->toArray());
+
+        // CV Entry
         if($project->type === 'cv' && $project->cvEntry) {
             $oldFields = array_merge($oldFields, $project->cvEntry->toArray());
+        }
+
+        // Landing Page Entry
+        if($project->type === 'landing_page' && isset($project->landingPage)) {
+            $oldFields = array_merge($oldFields, $project->landingPage->toArray());
         }
     }
 @endphp
@@ -26,7 +32,7 @@
         @method('PUT')
     @endif
 
-    {{-- Type --}}
+    {{-- Page Type --}}
     <div class="mb-3">
         <label for="type" class="form-label">Page Type</label>
         <select name="type" id="type" class="form-control" required>
@@ -53,7 +59,7 @@
         @error('slug') <div class="text-danger">{{ $message }}</div> @enderror
     </div>
 
-    {{-- Dynamic Fields --}}
+    {{-- Extra Fields --}}
     <div id="extra-fields"></div>
 
     <button type="submit" class="btn btn-primary mt-2">{{ isset($project) ? 'Update Page' : 'Create Page' }}</button>
@@ -107,17 +113,55 @@ function renderExtraFields(type, old = {}) {
     } else if(type === 'landing_page') {
         container.innerHTML = `
             <div class="mb-3">
-                <label>Headline</label>
-                <input type="text" name="headline" class="form-control" value="${old.headline ?? ''}">
+                <label>Header Title (H1)</label>
+                <input type="text" name="header_title" class="form-control" value="${old.title ?? ''}">
+            </div>
+            <div class="mb-3">
+                <label>Header Description</label>
+                <textarea name="header_description" class="form-control">${old.description ?? ''}</textarea>
+            </div>
+            <div class="mb-3">
+                <label>Header Image</label>
+                <input type="file" name="header_image" class="form-control">
+                ${old.image ? `<p>Current Image: <img src="/storage/${old.image}" width="100"></p>` : ''}
             </div>
             <div class="mb-3">
                 <label>CTA Button Text</label>
-                <input type="text" name="cta_text" class="form-control" value="${old.cta_text ?? ''}">
+                <input type="text" name="cta_text" class="form-control" value="${old.button_text ?? ''}">
             </div>
             <div class="mb-3">
                 <label>CTA Button Link</label>
-                <input type="url" name="cta_link" class="form-control" value="${old.cta_link ?? ''}">
+                <input type="url" name="cta_link" class="form-control" value="${old.button_link ?? ''}">
             </div>
+
+            <hr>
+            <h4>About Section</h4>
+            <div class="mb-3">
+                <label>About Title (H2)</label>
+                <input type="text" name="about_title" class="form-control" value="${old.about_title ?? ''}">
+            </div>
+            <div class="mb-3">
+                <label>About Description</label>
+                <textarea name="about_description" class="form-control">${old.about_description ?? ''}</textarea>
+            </div>
+
+            <hr>
+            <h4>Services Section</h4>
+            <div class="mb-3">
+                <label>Services Heading (H2)</label>
+                <input type="text" name="services_heading" class="form-control" value="${old.services_heading ?? 'خدماتي'}">
+            </div>
+
+            ${[1,2,3].map(i => `
+                <div class="mb-3">
+                    <label>Service ${i} Title</label>
+                    <input type="text" name="service${i}_title" class="form-control" value="${old[`service${i}_title`] ?? ''}">
+                </div>
+                <div class="mb-3">
+                    <label>Service ${i} Description</label>
+                    <textarea name="service${i}_description" class="form-control">${old[`service${i}_description`] ?? ''}</textarea>
+                </div>
+            `).join('')}
         `;
     } else if(type === 'website') {
         container.innerHTML = `

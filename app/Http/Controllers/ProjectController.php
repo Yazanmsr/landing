@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\CvEntry;
+use App\Models\LandingPage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -42,33 +43,58 @@ class ProjectController extends Controller
                     'linkedin_url'    => $request->linkedin_url,
                     'whatsapp_number' => $request->whatsapp_number,
                 ]);
+            }
+        } else if ($project->type === 'landing_page') {
+            $landing = $project->landingPage;
+
+            // Handle header image
+            $headerImagePath = $landing->image ?? null;
+
+            if ($request->hasFile('header_image')) {
+                $headerImagePath = $request->file('header_image')->store('landing_images', 'public');
+            }
+
+            $data = [
+                'title'             => $request->header_title,
+                'description'       => $request->header_description,
+                'button_text'       => $request->cta_text,
+                'button_link'       => $request->cta_link,
+                'image'             => $headerImagePath,
+                'about_title'       => $request->about_title,
+                'about_description' => $request->about_description,
+                'service1_title'      => $request->service1_title,
+                'service1_description'=> $request->service1_description,
+                'service2_title'      => $request->service2_title,
+                'service2_description'=> $request->service2_description,
+                'service3_title'      => $request->service3_title,
+                'service3_description'=> $request->service3_description,
+            ];
+
+            if ($landing) {
+                // Update existing landing page
+                $landing->update($data);
             } else {
-                CvEntry::create([
-                    'project_id'      => $project->id,
-                    'name'            => $request->name,
-                    'headline'        => $request->headline,
-                    'about'           => $request->about,
-                    'image'           => $imagePath,
-                    'skills'          => $request->skills,
-                    'work_experience' => $request->work_experience,
-                    'facebook_url'    => $request->facebook_url,
-                    'linkedin_url'    => $request->linkedin_url,
-                    'whatsapp_number' => $request->whatsapp_number,
-                ]);
+                // Create new landing page entry
+                $data['project_id'] = $project->id;
+                LandingPage::create($data);
             }
         }
+
+            
+        
 
         return redirect()->back()->with('success', 'Project updated successfully!');
     }
 
     public function store(Request $request)
     {
-
-        // رفع الصورة على السيرفر
+        // رفع الصورة على السيرفر (CV أو Landing Page)
         $imagePath = null;
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('header_image')) {
+            $imagePath = $request->file('header_image')->store('landing_images', 'public'); 
+            // هذا سيحفظ الصورة في storage/app/public/landing_images
+        } elseif ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('cv_images', 'public'); 
-            // هذا سيحفظ الصورة في storage/app/public/cv_images
         }
 
         // إنشاء المشروع
@@ -81,19 +107,38 @@ class ProjectController extends Controller
             'status'  => 'pending',
         ]);
 
-        // إذا كان نوع CV، احفظ بيانات الـ CV
         if ($request['type'] === 'cv') {
+            // حفظ بيانات CV
             CvEntry::create([
                 'project_id'      => $project->id,
                 'name'            => $request->name,
                 'headline'        => $request->headline,
                 'about'           => $request->about,
-                'image'           => $imagePath, // مسار الصورة المخزن
-                'skills'          => $request->skills, // مصفوفة أو JSON
+                'image'           => $imagePath,
+                'skills'          => $request->skills,
                 'work_experience' => $request->work_experience,
                 'facebook_url'    => $request->facebook_url,
                 'linkedin_url'    => $request->linkedin_url,
                 'whatsapp_number' => $request->whatsapp_number,
+            ]);
+        } elseif ($request['type'] === 'landing_page') {
+            // حفظ بيانات Landing Page
+            LandingPage::create([
+                'project_id'        => $project->id,
+                'title'             => $request->header_title,
+                'description'       => $request->header_description,
+                'button_text'       => $request->cta_text,
+                'button_link'       => $request->cta_link,
+                'image'             => $imagePath,
+                'services_heading'  => $request->services_heading,                
+                'about_title'       => $request->about_title,
+                'about_description' => $request->about_description,
+                'service1_title'    => $request->service1_title,
+                'service1_description' => $request->service1_description,
+                'service2_title'    => $request->service2_title,
+                'service2_description' => $request->service2_description,
+                'service3_title'    => $request->service3_title,
+                'service3_description' => $request->service3_description,
             ]);
         }
 
@@ -110,13 +155,19 @@ class ProjectController extends Controller
 
     public function show($userId, $slug)
     {
+        $user = Auth::user();
 
-        $project = Project::where('user_id', $userId)
-            ->where('slug', $slug)
-            ->when(!Gate::allows('is-admin'), function($query) {
-                $query->where('status', 'approved');
+        if (!$user){
+            die("<h1>please wait to be approved by admin</h1>");
+        }
+
+        $project = Project::where('slug', $slug)
+            ->where(function($query) use ($userId) {
+                $query->where('user_id', $userId)
+                    ->orWhere('status', 'approved');
             })
             ->firstOrFail();
+
 
         return view('projects.show', compact('project'));
     }
