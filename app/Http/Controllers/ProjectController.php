@@ -292,7 +292,7 @@ public function update(Request $request, Project $project)
 
         $project = Project::where('slug', $slug)
                 ->where('status', 'approved')
-                ->first();
+                ->first();  
 
 
         if (!$user && !$project){
