@@ -287,13 +287,17 @@ public function update(Request $request, Project $project)
     public function show($userId, $slug)
     {
         $user = Auth::user();
-        $project = Project::where('slug', $slug)->Where('status', 'approved')->firstOrFail();
 
-
-        if(!$project && !$user){
+        if (!$user){
             die("<h1>please wait to be approved by admin</h1>");
         }
 
+        $project = Project::where('slug', $slug)
+            ->where(function($query) use ($userId) {
+                $query->where('user_id', $userId)
+                    ->orWhere('status', 'approved');
+            })
+            ->firstOrFail();
 
 
         return view('projects.show', compact('project'));
