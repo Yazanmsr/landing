@@ -13,11 +13,6 @@ Route::post('/logout', function (Request $request) {
     return redirect('/'); // رجوع للصفحة الرئيسية أو صفحة تسجيل الدخول
 })->name('logout');
 
-// Logout
-Route::get('/logout', function() {
-    Auth::logout();
-    return redirect('/');
-})->name('logout');
 
 // Google login routes
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
