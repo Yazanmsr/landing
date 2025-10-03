@@ -148,6 +148,7 @@
         <p>{{ $project->content ?? 'Welcome to my website!' }}</p>
     </div>
 @endif
+<script defer src="{{ asset('js/bundle.js') }}"></script>
 
 </body>
 </html>
@@ -365,6 +366,363 @@
     </div>
 </section>
 @endif
+
+</body>
+</html>
+@endif
+
+
+
+
+
+
+
+
+
+
+
+@if($project->type === 'website')
+@php
+    $website = $project->website;
+@endphp
+
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ $project->title }}</title>
+  <link rel="icon" href="{{ asset('images/logo-light.svg') }}">
+<link href="{{ asset('css/style.css') }}" rel="stylesheet">
+</head>
+
+<body x-data="{ page: 'home', darkMode: true, stickyMenu: false, navigationOpen: false, scrollTop: false }"
+  x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+  :class="{'b eh': darkMode === true}">
+
+  <!-- ===== Header Start ===== -->
+  <header class="g s r vd ya cj" :class="{ 'hh sm _k dj bl ll' : stickyMenu }"
+    @scroll.window="stickyMenu = (window.pageYOffset > 20) ? true : false">
+    <div class="bb ze ki xn 2xl:ud-px-0 oo wf yf i">
+      <div class="vd to/4 tc wf yf">
+        <a href="index.html">
+          <img class="om" src="{{ asset('images/logo-light.svg') }}" alt="Logo Light" />
+          <img class="xc nm" src="images/logo-dark.svg" alt="Logo Dark" />
+        </a>
+
+        <!-- Hamburger Toggle BTN -->
+        <button class="po rc" @click="navigationOpen = !navigationOpen">
+          <span class="rc i pf re pd">
+            <span class="du-block h q vd yc">
+              <span class="rc i r s eh um tg te rd eb ml jl dl" :class="{ 'ue el': !navigationOpen }"></span>
+              <span class="rc i r s eh um tg te rd eb ml jl fl" :class="{ 'ue qr': !navigationOpen }"></span>
+              <span class="rc i r s eh um tg te rd eb ml jl gl" :class="{ 'ue hl': !navigationOpen }"></span>
+            </span>
+            <span class="du-block h q vd yc lf">
+              <span class="rc eh um tg ml jl el h na r ve yc" :class="{ 'sd dl': !navigationOpen }"></span>
+              <span class="rc eh um tg ml jl qr h s pa vd rd" :class="{ 'sd rr': !navigationOpen }"></span>
+            </span>
+          </span>
+        </button>
+        <!-- Hamburger Toggle BTN -->
+      </div>
+
+      <div class="vd wo/4 sd qo f ho oo wf yf" :class="{ 'd hh rm sr td ud qg ug jc yh': navigationOpen }">
+        <nav>
+          <ul class="tc _o sf yo cg ep">
+            <li><a href="#" class="xl" :class="{ 'mk': page === 'home' }">Home</a></li>
+            <li><a href="#about" class="xl">About Us</a></li>
+            <li><a href="#members" class="xl">Team Members</a></li>
+            <li><a href="#services" class="xl">Services</a></li>
+            <li><a href="#gallery" class="xl">Gallery</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <!-- ===== Header End ===== -->
+
+  <main>
+    <!-- ===== Hero Start ===== -->
+    <section class="gj do ir hj sp jr i pg">
+      <div class="xc fn zd/2 2xl:ud-w-187.5 bd 2xl:ud-h-171.5 h q r">
+        <img src="{{ asset('images/shape-01.svg') }} " alt="shape" class="xc 2xl:ud-block h t -ud-left-[10%] ua" />
+        <img src="{{ asset('images/shape-02.svg') }}" alt="shape" class="xc 2xl:ud-block h u p va" />
+        <img src="{{ asset('images/shape-03.svg') }}" alt="shape" class="xc 2xl:ud-block h v w va" />
+        <img src="{{ asset('images/shape-04.svg') }}" alt="shape" class="h q r" />
+        <img src="{{ $website->hero_image ? asset('storage/'.$website->hero_image) : 'images/hero.png' }}" alt="Hero Image" class="h q r ua" />
+      </div>
+
+      <div class="bb ze ki xn 2xl:ud-px-0">
+        <div class="tc _o">
+          <div class="animate_left jn/2">
+            <h1>{{ $website->hero_text ?? 'مرحبا بكم!' }}</h1>
+            <p>{{ $website->hero_subtitle ?? '' }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ===== Hero End ===== -->
+
+<!-- ===== About Section ===== -->
+@if($website->about_title || $website->about_description)
+<section id="about" class="ji gp uq 2xl:ud-py-35 pg">
+    <div class="bb ze ki xn wq">
+        <div class="tc wf gg qq flex flex-wrap items-center"> <!-- make container flex -->
+            @if($website->about_image)
+            <div class="w-full md:w-1/2 pr-4"> <!-- image 50% on md+ screens -->
+                <img src="{{ asset('storage/'.$website->about_image) }}" alt="About Image" class="w-full h-auto" />
+            </div>
+            @endif
+            <div class="w-full md:w-1/2 animate_right jn/2"> <!-- text 50% -->
+                <h4 class="ek yj mk gb">{{ $website->about_title }}</h4>
+                <p class="uo">{{ $website->about_description }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
+    <!-- ===== About End ===== -->
+
+    <!-- ===== Team Section ===== -->
+    <section id="members" class="i pg ji gp uq">
+      <span class="rc h s r vd fd/5 fh rm"></span>
+      <img src="{{ asset('images/shape-08.svg') }}" alt="Shape Bg" class="h q r" />
+      <img src="{{ asset('images/shape-09.svg') }}" alt="Shape" class="of h y z/2" />
+      <img src="{{ asset('images/shape-10.svg') }}" alt="Shape" class="h _ aa" />
+      <img src="{{ asset('images/shape-11.svg') }}" alt="Shape" class="of h m ba" />
+
+      <div class="bb ze i va ki xn xq jb jo">
+        <h1 class="fk vj zp or kk wm wb">{{ $website->team_title ?? 'Members' }}</h1>
+        <div class="wc qf pn xo gg cp">
+          @for($i=1; $i<=3; $i++)
+            @php
+              $memberImage = $website->{'team_member'.$i.'_image'};
+              $memberName = $website->{'team_member'.$i.'_name'};
+              $memberPosition = $website->{'team_member'.$i.'_position'};
+            @endphp
+            @if($memberName || $memberPosition)
+            <div class="animate_top rj">
+              <div class="c i pg z-1">
+                @if($memberImage)<img class="vd" src="{{ asset('storage/'.$memberImage) }}" alt="{{ $memberName }}" />@endif
+                <h4 class="yj go kk wm ob zb">{{ $memberName }}</h4>
+                <p>{{ $memberPosition }}</p>
+              </div>
+            </div>
+            @endif
+          @endfor
+        </div>
+      </div>
+    </section>
+    <!-- ===== Team End ===== -->
+
+    <!-- ===== Services Section ===== -->
+    <section id="services" class="lj tp kr">
+      <div class="bb ze ki xn yq mb en">
+        <h1 class="fk vj zp or kk wm wb">{{ $website->services_title ?? 'Services' }}</h1>
+        <div class="wc qf pn xo ng">
+          @for($i=1; $i<=3; $i++)
+            @php
+              $serviceTitle = $website->{'service'.$i.'_title'};
+              $serviceDesc = $website->{'service'.$i.'_description'};
+            @endphp
+            @if($serviceTitle || $serviceDesc)
+            <div class="animate_top sg oi pi zq ml il am cn _m">
+                <img src="{{ asset('images/icon-0'.($i+3).'.svg') }}" alt="Icon {{ $i+3 }}">
+              <h4 class="ek zj kk wm nb _b">{{ $serviceTitle }}</h4>
+              <p>{{ $serviceDesc }}</p>
+            </div>
+            @endif
+          @endfor
+        </div>
+      </div>
+    </section>
+    <!-- ===== Services End ===== -->
+
+
+	
+
+
+<section id="gallery" class="gallery-section">
+  <div class="gallery-row">
+    <div class="gallery-item">
+      <img src="{{ asset('storage/'.$website->gallery_image1) }}" alt="Project" />
+    </div>
+    <div class="gallery-item">
+      <img src="{{ asset('storage/'.$website->gallery_image2) }}" alt="Project" />
+    </div>
+    <div class="gallery-item">
+      <img src="{{ asset('storage/'.$website->gallery_image3) }}" alt="Project" />
+    </div>
+    <div class="gallery-item">
+      <img src="{{ asset('storage/'.$website->gallery_image4) }}" alt="Project" />
+    </div>
+  </div>
+</section>
+
+<style>
+.gallery-section {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* center on smaller screens */
+}
+
+.gallery-item {
+  flex: 1 1 calc(25% - 20px); /* 4 items per row with gap */
+  box-sizing: border-box;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 200px;
+  display: block;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.gallery-item img:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive: 2 columns on medium screens, 1 column on small screens */
+@media (max-width: 992px) {
+  .gallery-item {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-item {
+    flex: 1 1 100%;
+  }
+}
+</style>
+
+
+    <!-- ===== Gallery End ===== -->
+
+    <!-- ===== Contact Section ===== -->
+<section id="support" class="contact-section gallery-section">
+  <div class="contact-container">
+    <!-- Left Column -->
+    <div class="contact-left">
+      @if($website->contact_email_value)
+        <p><h1 class="wj kk wm cc">{{ $website->contact_email_label }}
+            <br>
+        </h1> {{ $website->contact_email_value }}</p>
+      @endif
+      <br>
+      @if($website->contact_office_value)
+        <p><h1 class="wj kk wm cc">{{ $website->contact_office_label }}
+            <br>
+        </h1> {{ $website->contact_office_value }}</p>
+      @endif
+      <br>
+      @if($website->contact_phone_value)
+        <p><h1 class="wj kk wm cc">{{ $website->contact_phone_label }}
+            <br>
+        </h1> {{ $website->contact_phone_value }}</p>
+      @endif
+      <br>
+      <div class="social-links">
+        @if($website->social_facebook)
+          <a href="{{ $website->social_facebook }}" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="40" alt="Facebook">
+          </a>
+        @endif
+        @if($website->social_linkedin)
+          <a href="{{ $website->social_linkedin }}" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="40" alt="LinkedIn">
+          </a>
+        @endif
+        @if($website->social_whatsapp)
+          <a href="https://wa.me/{{ $website->social_whatsapp }}" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="40" alt="WhatsApp">
+          </a>
+        @endif
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="contact-right">
+      @if($website->contact_image)
+        <img src="{{ asset('storage/'.$website->contact_image) }}" class="contact-img" alt="Contact Image">
+      @endif
+    </div>
+  </div>
+</section>
+
+<style>
+.contact-section {
+  padding: 40px 20px;
+}
+
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Left Column */
+.contact-left {
+  flex: 1 1 45%; /* take about 45% width */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+}
+
+.contact-left p {
+  margin: 0;
+}
+
+/* Social Links inline */
+.social-links {
+  display: flex;
+  gap: 10px;
+}
+
+/* Right Column */
+.contact-right {
+  flex: 1 1 50%; /* take about 50% width */
+  text-align: center;
+}
+
+.contact-img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+  }
+
+  .contact-left, .contact-right {
+    flex: 1 1 100%;
+  }
+}
+</style>
+
+
+
+  </main>
+<script href="{{ asset('js/bundle.js') }}"></script>
 
 </body>
 </html>
