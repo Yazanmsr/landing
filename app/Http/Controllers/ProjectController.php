@@ -9,6 +9,7 @@ use App\Models\LandingPage;
 use App\Models\Website;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProjectController extends Controller
 {
@@ -287,8 +288,15 @@ public function update(Request $request, Project $project)
     public function show($userId, $slug)
     {
         $user = Auth::user();
+        
 
-        if (!$user){
+        $project = Project::where('slug', $slug)
+                ->where('status', 'approved')
+                ->first();
+
+        
+
+        if (!$user && !$project){
             die("<h1>please wait to be approved by admin</h1>");
         }
 
