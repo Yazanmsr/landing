@@ -152,3 +152,8 @@ Route::post('/projects', [ProjectController::class, 'store'])->name('projects.st
 
 // Route to update an existing project
 Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+
+
+use App\Http\Controllers\SitemapController;
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);

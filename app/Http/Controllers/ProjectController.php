@@ -294,7 +294,6 @@ public function update(Request $request, Project $project)
                 ->where('status', 'approved')
                 ->first();
 
-        
 
         if (!$user && !$project){
             die("<h1>please wait to be approved by admin</h1>");
