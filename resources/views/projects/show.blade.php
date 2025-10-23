@@ -133,6 +133,12 @@
                             <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="50px" alt="WhatsApp">
                         </a>
                     @endif
+                    @if($cv->phone_number)
+                        <a href="tel:{{ $cv->phone_number }}">
+                            <img src="https://cdn-icons-png.flaticon.com/512/724/724664.png" width="50px" alt="Phone">
+                        </a>
+                    @endif
+
 
                 </div>
                 <div class="col-md-6 text-center">

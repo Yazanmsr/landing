@@ -21,6 +21,7 @@ class CvEntry extends Model
         'work_experience',
         'facebook_url',
         'linkedin_url',
+        'phone_number',
         'whatsapp_number',
     ];
 

@@ -17,7 +17,7 @@ Route::post('/logout', function (Request $request) {
 Route::get('/logout', function() {
     Auth::logout();
     return redirect('/');
-})->name('logout');
+});
 
 // Google login routes
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');

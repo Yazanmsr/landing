@@ -42,6 +42,7 @@ class ProjectController extends Controller
                     'facebook_url'    => $request->facebook_url,
                     'linkedin_url'    => $request->linkedin_url,
                     'whatsapp_number' => $request->whatsapp_number,
+                    'phone_number' => $request->phone_number,
                 ]);
             }
         } else if ($project->type === 'landing_page') {
@@ -104,10 +105,11 @@ class ProjectController extends Controller
             'slug'    => $request['slug'],
             'type'    => $request['type'],
             'content' => $request['content'] ?? null,
-            'status'  => 'pending',
+            'status'  => 'approved',
         ]);
 
         if ($request['type'] === 'cv') {
+            
             // حفظ بيانات CV
             CvEntry::create([
                 'project_id'      => $project->id,
@@ -120,6 +122,7 @@ class ProjectController extends Controller
                 'facebook_url'    => $request->facebook_url,
                 'linkedin_url'    => $request->linkedin_url,
                 'whatsapp_number' => $request->whatsapp_number,
+                'phone_number' => $request->phone_number,
             ]);
         } elseif ($request['type'] === 'landing_page') {
             // حفظ بيانات Landing Page

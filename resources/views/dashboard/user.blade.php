@@ -39,7 +39,7 @@
             <option value="">-- Select Type --</option>
             <option value="landing_page" {{ ($oldFields['type'] ?? '') == 'landing_page' ? 'selected' : '' }}>Landing Page</option>
             <option value="cv" {{ ($oldFields['type'] ?? '') == 'cv' ? 'selected' : '' }}>CV</option>
-            <option value="website" {{ ($oldFields['type'] ?? '') == 'website' ? 'selected' : '' }}>Website</option>
+          <!--  <option value="website" {{ ($oldFields['type'] ?? '') == 'website' ? 'selected' : '' }}>Website</option>-->
         </select>
         @error('type') <div class="text-danger">{{ $message }}</div> @enderror
     </div>
@@ -90,11 +90,11 @@ function renderExtraFields(type, old = {}) {
                 ${old.image ? `<p>Current Image: <img src="/storage/${old.image}" width="100"></p>` : ''}
             </div>
             <div class="mb-3">
-                <label>Skills (JSON)</label>
+                <label>Skills </label>
                 <textarea name="skills" class="form-control" rows="5" placeholder='["PHP","Laravel","React"]'>${old.skills ?? ''}</textarea>
             </div>
             <div class="mb-3">
-                <label>Work Experience (JSON)</label>
+                <label>Work Experience</label>
                 <textarea name="work_experience" class="form-control" rows="5" placeholder='[{"company":"ABC","role":"Dev"}]'>${old.work_experience ?? ''}</textarea>
             </div>
             <div class="mb-3">
@@ -108,6 +108,10 @@ function renderExtraFields(type, old = {}) {
             <div class="mb-3">
                 <label>WhatsApp Number</label>
                 <input type="text" name="whatsapp_number" class="form-control" value="${old.whatsapp_number ?? ''}" placeholder="e.g. +9627XXXXXXXX">
+            </div>
+            <div class="mb-3">
+                <label>Phone Number</label>
+                <input type="text" name="phone_number" class="form-control" value="${old.phone_number ?? ''}" placeholder="e.g. +9627XXXXXXXX">
             </div>
         `;
     } else if(type === 'landing_page') {
@@ -126,11 +130,11 @@ function renderExtraFields(type, old = {}) {
                 ${old.image ? `<p>Current Image: <img src="/storage/${old.image}" width="100"></p>` : ''}
             </div>
             <div class="mb-3">
-                <label>CTA Button Text</label>
+                <label>Main Button Text</label>
                 <input type="text" name="cta_text" class="form-control" value="${old.button_text ?? ''}">
             </div>
             <div class="mb-3">
-                <label>CTA Button Link</label>
+                <label>Main Button Link</label>
                 <input type="url" name="cta_link" class="form-control" value="${old.button_link ?? ''}">
             </div>
 
@@ -170,7 +174,7 @@ function renderExtraFields(type, old = {}) {
                 <input type="text" name="homepage_title" class="form-control" value="${old.homepage_title ?? ''}">
             </div>
             <div class="mb-3">
-                <label>Navigation Links (JSON)</label>
+                <label>Navigation Links </label>
                 <textarea name="nav_links" class="form-control" rows="5" placeholder='[{"label":"Home","url":"/"},{"label":"About","url":"/about"}]'>${old.nav_links ?? ''}</textarea>
             </div>
         `;
